@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentPulse | AI Workforce Intelligence Platform</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ============================================================
+   ROOT VARIABLES / DESIGN TOKENS
+============================================================ */
+:root{
+  --primary:#D45A7A;
+  --secondary:#E8A1B5;
+  --accent:#C86B87;
+
+  --success:#22A06B;
+  --danger:#D94A5C;
+  --warning:#D99A2B;
+
+  --bg-dark:#FFF7FA;
+  --bg-darker:#FCEEF3;
+
+  --glass:rgba(255,255,255,0.92);
+  --glass-strong:#FFFFFF;
+  --glass-border:#F3D7E1;
+
+  --text-primary:#2D2025;
+  --text-secondary:#765E67;
+  --text-muted:#9B858D;
+
+  --radius-lg:24px;
+  --radius-md:16px;
+  --radius-sm:10px;
+
+  --shadow-glow-primary:0 10px 30px rgba(212,90,122,0.15);
+  --shadow-glow-secondary:0 10px 30px rgba(232,161,181,0.15);
+  --shadow-glow-accent:0 10px 30px rgba(200,107,135,0.15);
+
+  --font-display:'Sora', sans-serif;
+  --font-body:'Inter', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+
+  --ease:cubic-bezier(.16,.84,.44,1);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:var(--bg-darker);}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--primary),var(--secondary));border-radius:10px;}
+
+a{text-decoration:none;color:inherit;}
+ul{list-style:none;}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;}
+input,select{font-family:inherit;outline:none;}
+
+.container{max-width:1360px;margin:0 auto;padding:0 32px;}
+.section-pad{padding:120px 0;position:relative;}
+
+/* ============================================================
+   GLOBAL BACKGROUND LAYERS (gradient mesh + particles)
+============================================================ */
+.bg-fixed{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(37,99,235,0.18), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(124,58,237,0.16), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(6,182,212,0.12), transparent 50%),
+    var(--bg-dark);
+  pointer-events:none;
+}
+.bg-fixed::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(circle at 50% 30%, black, transparent 70%);
+}
+#particle-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
+
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;z-index:0;pointer-events:none;}
+.blob-1{width:420px;height:420px;background:var(--primary);top:-100px;left:-100px;animation:floatBlob 18s ease-in-out infinite;}
+.blob-2{width:380px;height:380px;background:var(--secondary);top:200px;right:-140px;animation:floatBlob 22s ease-in-out infinite reverse;}
+.blob-3{width:340px;height:340px;background:var(--accent);bottom:-120px;left:35%;animation:floatBlob 20s ease-in-out infinite;}
+
+@keyframes floatBlob{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(40px,-50px) scale(1.08);}
+  66%{transform:translate(-30px,40px) scale(0.95);}
+}
+
+/* ============================================================
+   UTILITY: GLASS CARD
+============================================================ */
+.glass{
+  background:var(--glass);
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+}
+.glass-strong{background:var(--glass-strong);}
+
+.gradient-text{
+  background:linear-gradient(90deg,var(--primary),var(--secondary) 50%,var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  background-size:200% auto;
+  animation:gradientShift 6s ease infinite;
+}
+@keyframes gradientShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:12.5px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--accent);
+  padding:6px 16px;
+  border:1px solid rgba(6,182,212,0.3);
+  border-radius:100px;
+  background:rgba(6,182,212,0.08);
+  margin-bottom:20px;
+}
+.eyebrow i{font-size:10px;animation:pulse 2s ease-in-out infinite;}
+
+.section-head{max-width:640px;margin-bottom:64px;}
+.section-head h2{font-family:var(--font-display);font-size:clamp(28px,3.4vw,42px);font-weight:700;margin-bottom:14px;letter-spacing:-0.02em;}
+.section-head p{color:var(--text-secondary);font-size:16px;}
+
+/* Reveal on scroll */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s var(--ease), transform .8s var(--ease);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .8s var(--ease), transform .8s var(--ease);}
+.reveal-left.visible{opacity:1;transform:translateX(0);}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .8s var(--ease), transform .8s var(--ease);}
+.reveal-right.visible{opacity:1;transform:translateX(0);}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.navbar{
+  position:sticky;top:0;z-index:100;
+  padding:16px 0;
+  transition:all .4s var(--ease);
+}
+.navbar.scrolled{
+  background:rgba(15,23,42,0.75);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--glass-border);
+  padding:12px 0;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:21px;}
+.logo-mark{
+  width:38px;height:38px;border-radius:11px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 24px rgba(37,99,235,0.55);
+  animation:logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow{
+  0%,100%{box-shadow:0 0 18px rgba(37,99,235,0.45);}
+  50%{box-shadow:0 0 30px rgba(124,58,237,0.6);}
+}
+.logo-mark i{font-size:17px;color:#fff;}
+
+.nav-links{display:flex;align-items:center;gap:38px;}
+.nav-links a{
+  font-size:14.5px;font-weight:500;color:var(--text-secondary);
+  position:relative;padding:6px 0;transition:color .3s;
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:0;width:0;height:2px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:width .3s var(--ease);
+}
+.nav-links a:hover{color:var(--text-primary);}
+.nav-links a:hover::after{width:100%;}
+
+.btn{
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 26px;border-radius:100px;
+  font-size:14px;font-weight:600;
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;box-shadow:0 8px 24px rgba(37,99,235,0.35);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(37,99,235,0.5);}
+.btn-ghost{
+  background:var(--glass);border:1px solid var(--glass-border);color:var(--text-primary);
+}
+.btn-ghost:hover{background:var(--glass-strong);transform:translateY(-3px);}
+.btn-outline{
+  background:transparent;border:1.5px solid rgba(6,182,212,0.5);color:var(--accent);
+}
+.btn-outline:hover{background:rgba(6,182,212,0.1);transform:translateY(-3px);}
+
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.5);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none;}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
+
+.nav-toggle{display:none;font-size:22px;color:var(--text-primary);background:none;}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero{
+  min-height:92vh;display:flex;align-items:center;position:relative;
+  padding-top:60px;overflow:hidden;
+}
+.hero-inner{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center;
+  position:relative;z-index:2;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:100px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  font-size:13px;color:var(--text-secondary);margin-bottom:26px;
+}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 10px var(--success);animation:pulse 1.8s infinite;}
+
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(48px,6.4vw,84px);
+  font-weight:800;line-height:1.02;letter-spacing:-0.03em;margin-bottom:8px;
+}
+.hero .subtitle{
+  font-size:clamp(16px,1.6vw,20px);color:var(--accent);font-weight:600;
+  margin-bottom:22px;font-family:var(--font-mono);letter-spacing:.5px;
+}
+.typed-cursor{display:inline-block;width:3px;height:1em;background:var(--accent);vertical-align:middle;margin-left:4px;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+.hero-headline{font-size:clamp(20px,2.2vw,28px);font-weight:600;margin-bottom:20px;color:var(--text-primary);max-width:560px;}
+.hero p.desc{color:var(--text-secondary);font-size:16px;max-width:520px;margin-bottom:36px;}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:48px;}
+
+.hero-mini-stats{display:flex;gap:36px;flex-wrap:wrap;}
+.hero-mini-stats div{display:flex;flex-direction:column;}
+.hero-mini-stats .num{font-family:var(--font-display);font-size:26px;font-weight:800;}
+.hero-mini-stats .lbl{font-size:12.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+
+/* Hero visual: floating AI radar/orb */
+.hero-visual{position:relative;height:480px;display:flex;align-items:center;justify-content:center;}
+.orb-ring{
+  position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,0.08);
+}
+.orb-ring.r1{width:420px;height:420px;animation:spinSlow 30s linear infinite;}
+.orb-ring.r2{width:340px;height:340px;border-style:dashed;border-color:rgba(6,182,212,0.2);animation:spinSlow 22s linear infinite reverse;}
+.orb-ring.r3{width:260px;height:260px;animation:spinSlow 16s linear infinite;}
+@keyframes spinSlow{to{transform:rotate(360deg);}}
+
+.orb-core{
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #4f8cff, var(--primary) 45%, var(--secondary) 100%);
+  box-shadow:0 0 80px rgba(37,99,235,0.6), inset 0 0 40px rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  animation:pulseOrb 4s ease-in-out infinite;
+  z-index:3;
+}
+@keyframes pulseOrb{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+.orb-core i{font-size:56px;color:#fff;opacity:.9;}
+
+.orb-node{
+  position:absolute;padding:10px 16px;border-radius:12px;
+  font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px;
+  animation:floatNode 5s ease-in-out infinite;
+}
+.orb-node i{font-size:13px;}
+.node-1{top:8%;left:2%;animation-delay:0s;color:var(--success);border-color:rgba(34,197,94,0.3);}
+.node-2{top:20%;right:0;animation-delay:1s;color:var(--warning);border-color:rgba(245,158,11,0.3);}
+.node-3{bottom:14%;left:0;animation-delay:2s;color:var(--accent);border-color:rgba(6,182,212,0.3);}
+.node-4{bottom:2%;right:6%;animation-delay:1.5s;color:var(--secondary);border-color:rgba(124,58,237,0.3);}
+@keyframes floatNode{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+
+.scroll-cue{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);font-size:12px;letter-spacing:1px;}
+.scroll-cue .line{width:1px;height:34px;background:linear-gradient(var(--text-muted),transparent);animation:scrollLine 2s ease-in-out infinite;}
+@keyframes scrollLine{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+/* ============================================================
+   KPI CARDS
+============================================================ */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;}
+.kpi-card{
+  padding:28px 24px;position:relative;overflow:hidden;
+  transition:transform .4s var(--ease), box-shadow .4s var(--ease), border-color .4s;
+}
+.kpi-card::before{
+  content:'';position:absolute;top:-40%;right:-40%;width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle, var(--glow-color,var(--primary)) 0%, transparent 70%);
+  opacity:.25;transition:opacity .4s;
+}
+.kpi-card:hover{transform:translateY(-8px);border-color:rgba(255,255,255,0.25);}
+.kpi-card:hover::before{opacity:.5;}
+.kpi-icon{
+  width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;margin-bottom:20px;color:#fff;
+  background:linear-gradient(135deg,var(--glow-color,var(--primary)),rgba(255,255,255,0.1));
+  box-shadow:0 8px 20px -6px var(--glow-color,var(--primary));
+}
+.kpi-value{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:4px;letter-spacing:-0.02em;}
+.kpi-label{font-size:13.5px;color:var(--text-secondary);margin-bottom:14px;}
+.kpi-trend{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+.kpi-trend.up{color:var(--success);}
+.kpi-trend.down{color:var(--danger);}
+
+/* ============================================================
+   PREDICTION FORM
+============================================================ */
+.predict-wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:start;}
+.form-card{padding:40px;}
+.form-card-head{display:flex;align-items:center;gap:14px;margin-bottom:32px;}
+.form-card-head .icon-box{
+  width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;
+}
+.form-card-head h3{font-family:var(--font-display);font-size:20px;font-weight:700;}
+.form-card-head p{font-size:13px;color:var(--text-secondary);margin-top:2px;}
+
+/* ================================
+   EMPLOYEE PROFILE INPUT - FIXED
+================================ */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    column-gap:24px;
+    row-gap:24px;
+    width:100%;
+    align-items:start;
+}
+
+.form-grid > .field{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    position:relative;
+}
+
+.form-grid .input-wrap{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    position:relative;
+}
+
+.form-grid input,
+.form-grid select{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    height:46px;
+    padding:12px 14px;
+    box-sizing:border-box;
+}
+
+.form-grid input[type="range"]{
+    width:100%;
+    min-width:0;
+    height:5px;
+    padding:0;
+    box-sizing:border-box;
+}
+
+.form-grid .range-out{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    box-sizing:border-box;
+}
+
+/* Long labels won't push/overlap neighbouring boxes */
+.form-grid .field label{
+    width:100%;
+    min-width:0;
+    line-height:1.35;
+    min-height:20px;
+}
+.field{display:flex;flex-direction:column;gap:7px;position:relative;}
+.field label{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:6px;}
+.field label i{color:var(--accent);font-size:11px;width:14px;}
+.input-wrap{position:relative;}
+.field input,.field select{
+  width:100%;padding:12px 14px;border-radius:10px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);
+  color:var(--text-primary);font-size:14px;transition:border-color .3s, background .3s, box-shadow .3s;
+}
+.field select{appearance:none;-webkit-appearance:none;cursor:pointer;}
+.field select option{background:#1E293B;color:var(--text-primary);}
+.field input:focus,.field select:focus{
+  border-color:var(--primary);background:rgba(37,99,235,0.08);
+  box-shadow:0 0 0 4px rgba(37,99,235,0.15);
+}
+.select-caret{position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted);font-size:11px;}
+
+.range-field .range-out{display:flex;justify-content:space-between;font-size:12px;color:var(--accent);font-family:var(--font-mono);margin-top:-2px;}
+.field input[type="range"]{
+  -webkit-appearance:none;height:5px;border-radius:4px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  padding:0;cursor:pointer;
+}
+.field input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:#fff;box-shadow:0 0 0 4px rgba(37,99,235,0.4);cursor:pointer;
+}
+
+.form-actions{display:flex;gap:14px;margin-top:34px;}
+.form-actions .btn{flex:1;justify-content:center;}
+.btn-predict{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;padding:15px;font-size:15px;box-shadow:0 10px 30px rgba(37,99,235,0.4);
+}
+.btn-reset{background:var(--glass);border:1px solid var(--glass-border);color:var(--text-secondary);padding:15px;}
+.btn-reset:hover{color:var(--text-primary);}
+
+/* ============================================================
+   PREDICTION RESULT
+============================================================ */
+.result-card{padding:36px;position:sticky;top:110px;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:520px;justify-content:center;}
+.result-placeholder{color:var(--text-muted);}
+.result-placeholder i{font-size:44px;margin-bottom:16px;opacity:.5;display:block;}
+.result-placeholder p{font-size:14px;max-width:220px;margin:0 auto;}
+
+.result-content{display:none;width:100%;animation:fadeInUp .6s var(--ease);}
+.result-content.active{display:block;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+.risk-ring-wrap{position:relative;width:180px;height:180px;margin:0 auto 22px;}
+.risk-ring-wrap svg{transform:rotate(-90deg);}
+.risk-ring-bg{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:12;}
+.risk-ring-fg{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.4s var(--ease), stroke 0.6s;}
+.risk-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.risk-ring-center .pct{font-family:var(--font-display);font-size:34px;font-weight:800;}
+.risk-ring-center .lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+
+.risk-badge{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:100px;
+  font-weight:700;font-size:14px;margin-bottom:18px;
+}
+.risk-badge .pulse-dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.4s infinite;}
+.risk-high{background:rgba(239,68,68,0.15);color:var(--danger);}
+.risk-medium{background:rgba(245,158,11,0.15);color:var(--warning);}
+.risk-low{background:rgba(34,197,94,0.15);color:var(--success);}
+
+@keyframes pulse{0%{box-shadow:0 0 0 0 currentColor;opacity:1;}70%{box-shadow:0 0 0 8px transparent;opacity:.6;}100%{opacity:1;}}
+
+.result-meta{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:22px;}
+.result-meta .meta-box{background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:12px;padding:14px;}
+.result-meta .meta-box .v{font-family:var(--font-display);font-weight:700;font-size:18px;}
+.result-meta .meta-box .k{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-top:2px;}
+
+/* ============================================================
+   ROOT CAUSE CARDS
+============================================================ */
+.cause-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.cause-card{padding:26px;transition:transform .35s var(--ease), border-color .35s;}
+.cause-card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,0.22);}
+.cause-top{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.cause-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0;}
+.cause-top h4{font-size:15px;font-weight:600;}
+.cause-bar-track{height:8px;border-radius:6px;background:rgba(255,255,255,0.06);overflow:hidden;margin-top:6px;}
+.cause-bar-fill{height:100%;border-radius:6px;width:0;transition:width 1.4s var(--ease);position:relative;}
+.cause-bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:shimmer 2s infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.cause-pct{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-top:8px;font-family:var(--font-mono);}
+
+/* ============================================================
+   RECOMMENDATIONS TIMELINE
+============================================================ */
+.rec-timeline{position:relative;padding-left:40px;}
+.rec-timeline::before{content:'';position:absolute;left:14px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--primary),var(--secondary),var(--accent));}
+.rec-item{position:relative;padding-bottom:34px;padding-left:26px;}
+.rec-item:last-child{padding-bottom:0;}
+.rec-item::before{
+  content:'';position:absolute;left:-40px;top:2px;width:30px;height:30px;border-radius:50%;
+  background:var(--bg-dark);border:2px solid var(--primary);
+}
+.rec-item::after{
+  content:'';position:absolute;left:-31px;top:11px;width:12px;height:12px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 0 12px var(--primary);
+}
+.rec-card{padding:20px 24px;display:flex;align-items:flex-start;gap:16px;}
+.rec-card .icon-box{width:40px;height:40px;border-radius:11px;background:rgba(6,182,212,0.12);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:16px;flex-shrink:0;}
+.rec-card h4{font-size:15.5px;font-weight:600;margin-bottom:4px;}
+.rec-card p{font-size:13.5px;color:var(--text-secondary);}
+.rec-priority{margin-left:auto;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
+.rec-priority.p-high{background:rgba(239,68,68,0.15);color:var(--danger);}
+.rec-priority.p-med{background:rgba(245,158,11,0.15);color:var(--warning);}
+.rec-priority.p-low{background:rgba(34,197,94,0.15);color:var(--success);}
+
+/* ============================================================
+   ANALYTICS SECTION
+============================================================ */
+.analytics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.analytics-grid .chart-card.wide{grid-column:span 2;}
+.chart-card{padding:26px;}
+.chart-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.chart-card-head h4{font-size:15px;font-weight:600;}
+.chart-card-head .tag{font-size:11px;color:var(--text-muted);font-family:var(--font-mono);}
+
+/* Bar chart placeholder */
+.bar-chart{display:flex;align-items:flex-end;gap:10px;height:160px;}
+.bar-chart .bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--primary),rgba(37,99,235,0.2));position:relative;height:0;transition:height 1.2s var(--ease);}
+.bar-chart .bar span{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10.5px;color:var(--text-muted);white-space:nowrap;}
+
+/* Donut chart placeholder (conic gradient) */
+.donut{width:150px;height:150px;border-radius:50%;margin:0 auto;position:relative;
+  background:conic-gradient(var(--primary) 0% 55%, var(--secondary) 55% 82%, var(--accent) 82% 100%);
+  animation:donutSpin 2s var(--ease);
+}
+@keyframes donutSpin{from{transform:rotate(-90deg) scale(.7);opacity:0;}to{transform:rotate(0) scale(1);opacity:1;}}
+.donut::before{content:'';position:absolute;inset:20px;border-radius:50%;background:#151E33;}
+.donut-legend{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+.donut-legend .leg{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-secondary);}
+.donut-legend .dot{width:9px;height:9px;border-radius:3px;}
+
+/* Line chart placeholder using SVG */
+.line-chart-wrap{width:100%;height:180px;}
+
+/* ===========================================
+   ATTRITION HEATMAP
+=========================================== */
+
+.heatmap-wrapper{
+    display:flex;
+    gap:14px;
+    margin-top:10px;
+}
+
+.heatmap-y-label{
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+    font-size:11px;
+    color:#9B858D;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.heatmap-content{
+    flex:1;
+}
+
+.heatmap-x-labels{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-bottom:7px;
+    text-align:center;
+}
+
+.heatmap-x-labels span{
+    font-size:11px;
+    color:#9B858D;
+}
+
+.heatmap-grid{
+    display:grid;
+    gap:6px;
+}
+
+.heatmap-row{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-bottom:6px;
+}
+
+.heatmap-row-label{
+    position:absolute;
+    right:calc(100% + 10px);
+    top:50%;
+    transform:translateY(-50%);
+    width:40px;
+    text-align:right;
+    font-size:11px;
+    font-weight:600;
+    color:#765E67;
+}
+
+.heatmap .cell{
+    height:58px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:600;
+    color:#fff;
+    transition:transform .25s ease, box-shadow .25s ease;
+    cursor:pointer;
+}
+
+.heatmap .cell:hover{
+    transform:scale(1.05);
+    box-shadow:0 8px 20px rgba(59,31,43,.18);
+}
+
+.heatmap-legend{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-top:18px;
+    font-size:11px;
+    color:#9B858D;
+}
+
+.legend-gradient{
+    width:130px;
+    height:8px;
+    border-radius:20px;
+    background:linear-gradient(
+        90deg,
+        #F6C6D3,
+        #D45A7A,
+        #8F304D
+    );
+}
+/* ============================================================
+   FEATURE IMPORTANCE
+============================================================ */
+.feature-list{display:flex;flex-direction:column;gap:18px;}
+.feature-row{display:grid;grid-template-columns:200px 1fr 60px;align-items:center;gap:16px;}
+.feature-row .fname{font-size:13.5px;font-weight:500;color:var(--text-secondary);}
+.feature-track{height:10px;border-radius:6px;background:rgba(255,255,255,0.05);overflow:hidden;}
+.feature-fill{height:100%;border-radius:6px;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width 1.6s var(--ease);}
+.feature-row .fval{font-family:var(--font-mono);font-size:12.5px;color:var(--accent);text-align:right;}
+
+/* ============================================================
+   AI WORKFLOW TIMELINE
+============================================================ */
+.workflow-track{display:flex;align-items:center;justify-content:space-between;position:relative;flex-wrap:wrap;gap:24px;}
+.workflow-track::before{
+  content:'';position:absolute;top:34px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary),var(--accent),var(--success));
+  z-index:0;
+}
+.wf-step{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;min-width:110px;text-align:center;}
+.wf-icon{
+  width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:24px;color:#fff;background:var(--bg-dark);border:2px solid var(--primary);
+  box-shadow:0 0 0 6px var(--bg-dark);position:relative;
+}
+.wf-icon::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--primary);opacity:.4;animation:ringPulse 2.4s infinite;}
+@keyframes ringPulse{0%{transform:scale(1);opacity:.5;}100%{transform:scale(1.5);opacity:0;}}
+.wf-step span{font-size:12.5px;font-weight:600;color:var(--text-secondary);max-width:110px;}
+
+/* ============================================================
+   ABOUT SECTION
+============================================================ */
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.about-card{padding:32px;text-align:left;}
+.about-card i{font-size:26px;color:var(--accent);margin-bottom:18px;display:block;}
+.about-card h4{font-size:17px;font-weight:700;margin-bottom:10px;}
+.about-card p{font-size:14px;color:var(--text-secondary);}
+
+/* ============================================================
+   TEAM SECTION
+============================================================ */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.team-card{padding:30px 24px;text-align:center;}
+.avatar{
+  width:84px;height:84px;border-radius:50%;margin:0 auto 18px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;font-family:var(--font-display);font-weight:700;
+  box-shadow:0 0 0 4px rgba(255,255,255,0.06);
+}
+.team-card h4{font-size:15.5px;font-weight:700;margin-bottom:4px;}
+.team-card .role{font-size:12.5px;color:var(--accent);margin-bottom:14px;}
+.team-social{display:flex;justify-content:center;gap:10px;}
+.team-social a{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-secondary);transition:all .3s;}
+.team-social a:hover{background:var(--primary);color:#fff;transform:translateY(-3px);}
+
+/* ============================================================
+   CONTACT
+============================================================ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+.contact-info-card{padding:36px;}
+.contact-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--glass-border);}
+.contact-row:last-child{border-bottom:none;}
+.contact-row .icon-box{width:42px;height:42px;border-radius:12px;background:rgba(37,99,235,0.12);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.contact-row h5{font-size:14px;font-weight:600;}
+.contact-row p{font-size:13px;color:var(--text-secondary);}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer{padding:70px 0 30px;position:relative;border-top:1px solid var(--glass-border);}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px;}
+.footer-brand p{color:var(--text-secondary);font-size:13.5px;margin:16px 0 22px;max-width:280px;}
+.footer-col h5{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;color:var(--text-primary);}
+.footer-col a{display:block;font-size:13.5px;color:var(--text-secondary);margin-bottom:12px;transition:color .3s;}
+.footer-col a:hover{color:var(--accent);}
+.social-icons{display:flex;gap:12px;}
+.social-icons a{width:38px;height:38px;border-radius:10px;background:var(--glass);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.social-icons a:hover{background:linear-gradient(135deg,var(--primary),var(--secondary));transform:translateY(-4px);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;padding-top:26px;border-top:1px solid var(--glass-border);font-size:13px;color:var(--text-muted);}
+
+/* Back to top */
+.back-top{
+  position:fixed;bottom:28px;right:28px;width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:16px;z-index:90;
+  box-shadow:0 8px 24px rgba(37,99,235,0.5);opacity:0;pointer-events:none;transition:all .4s var(--ease);
+}
+.back-top.show{opacity:1;pointer-events:auto;}
+.back-top:hover{transform:translateY(-4px);}
+
+/* Toast */
+.toast{
+  position:fixed;top:100px;right:28px;z-index:200;
+  background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);
+  border:1px solid var(--glass-border);border-left:4px solid var(--success);
+  padding:16px 22px;border-radius:12px;display:flex;align-items:center;gap:12px;
+  transform:translateX(140%);transition:transform .5s var(--ease);font-size:14px;
+}
+.toast.show{transform:translateX(0);}
+.toast i{color:var(--success);font-size:18px;}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width:1100px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .form-grid{grid-template-columns:repeat(2,1fr);}
+  .predict-wrap{grid-template-columns:1fr;}
+  .result-card{position:relative;top:0;}
+  .about-grid,.team-grid{grid-template-columns:repeat(2,1fr);}
+  .analytics-grid{grid-template-columns:repeat(2,1fr);}
+  .analytics-grid .chart-card.wide{grid-column:span 2;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-visual{height:340px;order:-1;}
+}
+@media (max-width:768px){
+  .nav-links{position:fixed;top:70px;left:0;right:0;background:rgba(15,23,42,0.98);backdrop-filter:blur(20px);flex-direction:column;padding:30px;gap:22px;transform:translateY(-130%);transition:transform .4s var(--ease);border-bottom:1px solid var(--glass-border);}
+  .nav-links.open{transform:translateY(0);}
+  .nav-toggle{display:block;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .form-grid{grid-template-columns:1fr;}
+  .cause-grid{grid-template-columns:1fr;}
+  .about-grid,.team-grid,.analytics-grid{grid-template-columns:1fr;}
+  .analytics-grid .chart-card.wide{grid-column:span 1;}
+  .footer-grid{grid-template-columns:1fr;}
+  .contact-grid{grid-template-columns:1fr;}
+  .feature-row{grid-template-columns:100px 1fr 44px;}
+  .section-pad{padding:80px 0;}
+  .hero-ctas{flex-direction:column;width:100%;}
+  .hero-mini-stats{gap:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Fixed background layers -->
+<div class="bg-fixed"></div>
+<canvas id="particle-canvas"></canvas>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#prediction">Prediction</a></li>
+            <li><a href="#analytics">Analytics</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+
+            <li>
+                <a href="#prediction" class="btn btn-primary">
+                    <i class="fa-solid fa-bolt"></i>
+                    Get Started
+                </a>
+            </li>
+        </ul>
+
+        <button class="nav-toggle" id="navToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
+</nav>
+
+<!-- ============================================================
+     HERO SECTION
+============================================================ -->
+<header class="hero" id="home">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <div class="hero-badge reveal"><span class="dot"></span> AI Model Live &middot; v2.4 Random Forest Engine</div>
+      <h1 class="reveal">Talent<span class="gradient-text">Pulse</span></h1>
+      <div class="subtitle reveal">AI WORKFORCE INTELLIGENCE PLATFORM</div>
+      <h2 class="hero-headline reveal">Predict Employee Attrition <span class="gradient-text">Before It Happens</span><span class="typed-cursor"></span></h2>
+      <p class="desc reveal">TalentPulse uses machine learning to forecast flight-risk employees, surface the root causes behind attrition, and hand HR leaders a clear, prioritized action plan &mdash; turning workforce data into proactive retention decisions.</p>
+      <div class="hero-ctas reveal">
+        <a href="#prediction" class="btn btn-primary"><i class="fa-solid fa-brain"></i> Predict Employee</a>
+        <a href="#analytics" class="btn btn-ghost"><i class="fa-solid fa-chart-line"></i> View Analytics</a>
+      </div>
+      <div class="hero-mini-stats reveal">
+        <div><span class="num" data-count="1470">0</span><span class="lbl">Employees Analyzed</span></div>
+        <div><span class="num" data-count="94" data-suffix="%">0</span><span class="lbl">Model Accuracy</span></div>
+        <div><span class="num" data-count="238">0</span><span class="lbl">High Risk Flagged</span></div>
+      </div>
+    </div>
+    <div class="hero-visual reveal-right">
+      <div class="orb-ring r1"></div>
+      <div class="orb-ring r2"></div>
+      <div class="orb-ring r3"></div>
+      <div class="orb-core"><i class="fa-solid fa-microchip"></i></div>
+      <div class="orb-node node-1 glass"><i class="fa-solid fa-user-check"></i> Retained</div>
+      <div class="orb-node node-2 glass"><i class="fa-solid fa-triangle-exclamation"></i> At Risk</div>
+      <div class="orb-node node-3 glass"><i class="fa-solid fa-chart-simple"></i> 94% Acc.</div>
+      <div class="orb-node node-4 glass"><i class="fa-solid fa-shield-halved"></i> Retention+</div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>SCROLL</span><div class="line"></div></div>
+</header>
+
+<!-- ============================================================
+     KPI SECTION
+============================================================ -->
+<section class="section-pad" id="dashboard">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> LIVE METRICS</div>
+      <h2>Workforce pulse, at a glance</h2>
+      <p>Real-time indicators pulled from the latest HR dataset and prediction engine run.</p>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card glass reveal" style="--glow-color:var(--primary)">
+        <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="kpi-value"><span data-count="1470">0</span></div>
+        <div class="kpi-label">Total Employees</div>
+        <div class="kpi-trend up"><i class="fa-solid fa-arrow-up"></i> 3.2% vs last quarter</div>
+      </div>
+      <div class="kpi-card glass reveal" style="--glow-color:var(--danger)">
+        <div class="kpi-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+        <div class="kpi-value"><span data-count="16" data-suffix="%">0</span></div>
+        <div class="kpi-label">Attrition Rate</div>
+        <div class="kpi-trend down"><i class="fa-solid fa-arrow-down"></i> 1.1% improved</div>
+      </div>
+      <div class="kpi-card glass reveal" style="--glow-color:var(--warning)">
+        <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="kpi-value"><span data-count="238">0</span></div>
+        <div class="kpi-label">High Risk Employees</div>
+        <div class="kpi-trend up"><i class="fa-solid fa-arrow-up"></i> 12 new this month</div>
+      </div>
+      <div class="kpi-card glass reveal" style="--glow-color:var(--success)">
+        <div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <div class="kpi-value"><span data-count="94" data-suffix="%">0</span></div>
+        <div class="kpi-label">Model Accuracy</div>
+        <div class="kpi-trend up"><i class="fa-solid fa-arrow-up"></i> 0.6% since retrain</div>
+      </div>
+      <div class="kpi-card glass reveal" style="--glow-color:var(--accent)">
+        <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div class="kpi-value"><span data-count="180" data-suffix="ms">0</span></div>
+        <div class="kpi-label">Prediction Speed</div>
+        <div class="kpi-trend up"><i class="fa-solid fa-gauge-high"></i> Real-time inference</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PREDICTION FORM + RESULT
+============================================================ -->
+<section class="section-pad" id="prediction">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> ATTRITION ENGINE</div>
+      <h2>Run an employee prediction</h2>
+      <p>Enter employee attributes below to generate a real-time attrition risk assessment.</p>
+    </div>
+
+    <div class="predict-wrap">
+      <!-- FORM -->
+      <div class="form-card glass reveal-left">
+        <div class="form-card-head">
+          <div class="icon-box"><i class="fa-solid fa-user-gear"></i></div>
+          <div>
+            <h3>Employee Profile Input</h3>
+            <p>All 25 model features · Random Forest Classifier</p>
+          </div>
+        </div>
+
+        <form id="predictForm">
+          <div class="form-grid">
+            <div class="field"><label><i class="fa-solid fa-id-badge"></i>Employee ID</label><input type="text" placeholder="EMP-00214" required></div>
+            <div class="field"><label><i class="fa-solid fa-cake-candles"></i>Age</label><input type="number" placeholder="34" min="18" max="65" required></div>
+            <div class="field"><label><i class="fa-solid fa-venus-mars"></i>Gender</label>
+              <div class="input-wrap"><select required><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-building"></i>Department</label>
+              <div class="input-wrap"><select required><option value="">Select</option><option>Sales</option><option>Research & Development</option><option>Human Resources</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-briefcase"></i>Job Role</label>
+              <div class="input-wrap"><select required><option value="">Select</option><option>Manager</option><option>Sales Executive</option><option>Research Scientist</option><option>Lab Technician</option><option>HR Executive</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-sack-dollar"></i>Monthly Income</label><input type="number" placeholder="65000" required></div>
+            <div class="field"><label><i class="fa-solid fa-hourglass-half"></i>Years At Company</label><input type="number" placeholder="5" min="0" required></div>
+            <div class="field"><label><i class="fa-solid fa-business-time"></i>OverTime</label>
+              <div class="input-wrap"><select required><option value="">Select</option><option>Yes</option><option>No</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-plane-departure"></i>Business Travel</label>
+              <div class="input-wrap"><select required><option value="">Select</option><option>Travel_Rarely</option><option>Travel_Frequently</option><option>Non-Travel</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-route"></i>Distance From Home (km)</label><input type="number" placeholder="8" required></div>
+
+            <div class="field range-field"><label><i class="fa-solid fa-face-smile"></i>Job Satisfaction</label>
+              <input type="range" min="1" max="4" value="3" oninput="this.nextElementSibling.querySelector('.v').textContent=this.value">
+              <div class="range-out"><span>Low</span><span class="v">3</span><span>High</span></div>
+            </div>
+            <div class="field range-field"><label><i class="fa-solid fa-leaf"></i>Environment Satisfaction</label>
+              <input type="range" min="1" max="4" value="3" oninput="this.nextElementSibling.querySelector('.v').textContent=this.value">
+              <div class="range-out"><span>Low</span><span class="v">3</span><span>High</span></div>
+            </div>
+            <div class="field range-field"><label><i class="fa-solid fa-scale-balanced"></i>Work Life Balance</label>
+              <input type="range" min="1" max="4" value="3" oninput="this.nextElementSibling.querySelector('.v').textContent=this.value">
+              <div class="range-out"><span>Low</span><span class="v">3</span><span>High</span></div>
+            </div>
+
+            <div class="field"><label><i class="fa-solid fa-star"></i>Performance Rating</label>
+              <div class="input-wrap"><select><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-graduation-cap"></i>Education</label>
+              <div class="input-wrap"><select><option value="">Select</option><option>Below College</option><option>College</option><option>Bachelor</option><option>Master</option><option>Doctor</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-ring"></i>Marital Status</label>
+              <div class="input-wrap"><select><option value="">Select</option><option>Single</option><option>Married</option><option>Divorced</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-chart-pie"></i>Stock Option Level</label>
+              <div class="input-wrap"><select><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option></select><i class="fa-solid fa-chevron-down select-caret"></i></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-chalkboard-user"></i>Training Times Last Year</label><input type="number" placeholder="2"></div>
+            <div class="field"><label><i class="fa-solid fa-arrow-trend-up"></i>Years Since Last Promotion</label><input type="number" placeholder="1"></div>
+            <div class="field range-field"><label><i class="fa-solid fa-people-arrows"></i>Relationship Satisfaction</label>
+              <input type="range" min="1" max="4" value="3" oninput="this.nextElementSibling.querySelector('.v').textContent=this.value">
+              <div class="range-out"><span>Low</span><span class="v">3</span><span>High</span></div>
+            </div>
+            <div class="field range-field"><label><i class="fa-solid fa-hand-fist"></i>Job Involvement</label>
+              <input type="range" min="1" max="4" value="3" oninput="this.nextElementSibling.querySelector('.v').textContent=this.value">
+              <div class="range-out"><span>Low</span><span class="v">3</span><span>High</span></div>
+            </div>
+            <div class="field"><label><i class="fa-solid fa-building-circle-arrow-right"></i>Num Companies Worked</label><input type="number" placeholder="2"></div>
+            <div class="field"><label><i class="fa-solid fa-percent"></i>Percent Salary Hike</label><input type="number" placeholder="14"></div>
+            <div class="field"><label><i class="fa-solid fa-user-clock"></i>Years In Current Role</label><input type="number" placeholder="3"></div>
+            <div class="field"><label><i class="fa-solid fa-user-tie"></i>Years With Current Manager</label><input type="number" placeholder="3"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-predict"><i class="fa-solid fa-wand-magic-sparkles"></i> Predict Attrition Risk</button>
+            <button type="reset" class="btn btn-reset" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RESULT -->
+      <div class="result-card glass reveal-right" id="resultCard">
+        <div class="result-placeholder" id="resultPlaceholder">
+          <i class="fa-solid fa-radar"></i>
+          <p>Fill in the employee profile and click Predict to generate an AI risk assessment.</p>
+        </div>
+
+        <div class="result-content" id="resultContent">
+          <div class="risk-badge risk-high" id="riskBadge"><span class="pulse-dot"></span> <span id="riskLabel">High Risk</span></div>
+          <div class="risk-ring-wrap">
+            <svg width="180" height="180" viewBox="0 0 180 180">
+              <circle class="risk-ring-bg" cx="90" cy="90" r="78"></circle>
+              <circle class="risk-ring-fg" id="riskRing" cx="90" cy="90" r="78" stroke="#EF4444" stroke-dasharray="490" stroke-dashoffset="490"></circle>
+            </svg>
+            <div class="risk-ring-center">
+              <div class="pct" id="riskPct">0%</div>
+              <div class="lbl">Risk Score</div>
+            </div>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-secondary);">Employee Status: <strong style="color:var(--text-primary)" id="empStatus">Active — Flight Risk Detected</strong></p>
+          <div class="result-meta">
+            <div class="meta-box"><div class="v" id="confScore">91%</div><div class="k">Confidence</div></div>
+            <div class="meta-box"><div class="v" id="predSpeed">142ms</div><div class="k">Inference Time</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ROOT CAUSE ANALYSIS
+============================================================ -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> ROOT CAUSE ANALYSIS</div>
+      <h2>Why this employee may leave</h2>
+      <p>The model decomposes each prediction into the contributing risk factors below.</p>
+    </div>
+    <div class="cause-grid">
+      <div class="cause-card glass reveal">
+        <div class="cause-top"><div class="cause-icon" style="background:var(--danger)"><i class="fa-solid fa-face-frown"></i></div><h4>Low Job Satisfaction</h4></div>
+        <div class="cause-bar-track"><div class="cause-bar-fill" data-width="82" style="background:var(--danger)"></div></div>
+        <div class="cause-pct"><span>Impact score</span><span>82%</span></div>
+      </div>
+      <div class="cause-card glass reveal">
+        <div class="cause-top"><div class="cause-icon" style="background:var(--warning)"><i class="fa-solid fa-business-time"></i></div><h4>Frequent Overtime</h4></div>
+        <div class="cause-bar-track"><div class="cause-bar-fill" data-width="76" style="background:var(--warning)"></div></div>
+        <div class="cause-pct"><span>Impact score</span><span>76%</span></div>
+      </div>
+      <div class="cause-card glass reveal">
+        <div class="cause-top"><div class="cause-icon" style="background:var(--primary)"><i class="fa-solid fa-sack-dollar"></i></div><h4>Low Salary</h4></div>
+        <div class="cause-bar-track"><div class="cause-bar-fill" data-width="68" style="background:var(--primary)"></div></div>
+        <div class="cause-pct"><span>Impact score</span><span>68%</span></div>
+      </div>
+      <div class="cause-card glass reveal">
+        <div class="cause-top"><div class="cause-icon" style="background:var(--secondary)"><i class="fa-solid fa-scale-unbalanced"></i></div><h4>Poor Work Life Balance</h4></div>
+        <div class="cause-bar-track"><div class="cause-bar-fill" data-width="64" style="background:var(--secondary)"></div></div>
+        <div class="cause-pct"><span>Impact score</span><span>64%</span></div>
+      </div>
+      <div class="cause-card glass reveal">
+        <div class="cause-top"><div class="cause-icon" style="background:var(--accent)"><i class="fa-solid fa-arrow-trend-up"></i></div><h4>No Recent Promotion</h4></div>
+        <div class="cause-bar-track"><div class="cause-bar-fill" data-width="57" style="background:var(--accent)"></div></div>
+        <div class="cause-pct"><span>Impact score</span><span>57%</span></div>
+      </div>
+      <div class="cause-card glass reveal">
+        <div class="cause-top"><div class="cause-icon" style="background:var(--success)"><i class="fa-solid fa-clock-rotate-left"></i></div><h4>Years in Same Role</h4></div>
+        <div class="cause-bar-track"><div class="cause-bar-fill" data-width="49" style="background:var(--success)"></div></div>
+        <div class="cause-pct"><span>Impact score</span><span>49%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     AI RECOMMENDATIONS
+============================================================ -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> AI RECOMMENDATIONS</div>
+      <h2>Suggested retention actions</h2>
+      <p>Prioritized interventions generated from the root-cause breakdown above.</p>
+    </div>
+    <div class="rec-timeline">
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-sack-dollar"></i></div><div><h4>Salary Revision</h4><p>Benchmark against market rate and propose a compensation adjustment.</p></div><span class="rec-priority p-high">High</span></div></div>
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-award"></i></div><div><h4>Promotion Discussion</h4><p>Schedule a career progression review with the direct manager.</p></div><span class="rec-priority p-high">High</span></div></div>
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-seedling"></i></div><div><h4>Career Growth Plan</h4><p>Define a 12-month growth path with measurable milestones.</p></div><span class="rec-priority p-med">Medium</span></div></div>
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-hourglass-end"></i></div><div><h4>Reduce Overtime</h4><p>Redistribute workload across the team to ease overtime hours.</p></div><span class="rec-priority p-high">High</span></div></div>
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-chalkboard-user"></i></div><div><h4>Leadership Training</h4><p>Enroll the employee's manager in a people-management program.</p></div><span class="rec-priority p-med">Medium</span></div></div>
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-house-laptop"></i></div><div><h4>Flexible Work Options</h4><p>Offer hybrid or flexible scheduling to improve work-life balance.</p></div><span class="rec-priority p-med">Medium</span></div></div>
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-trophy"></i></div><div><h4>Recognition Program</h4><p>Nominate for the quarterly recognition program to boost morale.</p></div><span class="rec-priority p-low">Low</span></div></div>
+      <div class="rec-item reveal"><div class="rec-card glass"><div class="icon-box"><i class="fa-solid fa-people-arrows"></i></div><div><h4>Mentorship Pairing</h4><p>Pair with a senior mentor for guidance and support.</p></div><span class="rec-priority p-low">Low</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ANALYTICS SECTION
+============================================================ -->
+<section class="section-pad" id="analytics">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> WORKFORCE ANALYTICS</div>
+      <h2>Explore the full dataset</h2>
+      <p>Aggregate insights across departments, demographics, and model performance.</p>
+    </div>
+    <div class="analytics-grid">
+
+      <div class="chart-card glass wide reveal">
+        <div class="chart-card-head"><h4>Department-wise Attrition</h4><span class="tag">n = 1470</span></div>
+        <div class="bar-chart" id="deptBars" style="margin-bottom:28px;">
+          <div class="bar" data-h="70" style="background:linear-gradient(180deg,var(--primary),rgba(37,99,235,.15))"><span>Sales</span></div>
+          <div class="bar" data-h="45" style="background:linear-gradient(180deg,var(--secondary),rgba(124,58,237,.15))"><span>R&D</span></div>
+          <div class="bar" data-h="30" style="background:linear-gradient(180deg,var(--accent),rgba(6,182,212,.15))"><span>HR</span></div>
+          <div class="bar" data-h="55" style="background:linear-gradient(180deg,var(--warning),rgba(245,158,11,.15))"><span>Marketing</span></div>
+          <div class="bar" data-h="38" style="background:linear-gradient(180deg,var(--success),rgba(34,197,94,.15))"><span>Finance</span></div>
+        </div>
+      </div>
+
+      <div class="chart-card glass reveal">
+        <div class="chart-card-head"><h4>Gender Distribution</h4></div>
+        <div class="donut" style="background:conic-gradient(var(--primary) 0% 60%, var(--secondary) 60% 100%);"></div>
+        <div class="donut-legend">
+          <div class="leg"><span class="dot" style="background:var(--primary)"></span>Male — 60%</div>
+          <div class="leg"><span class="dot" style="background:var(--secondary)"></span>Female — 40%</div>
+        </div>
+      </div>
+
+      <div class="chart-card glass reveal">
+        <div class="chart-card-head"><h4>Age Distribution</h4></div>
+        <div class="bar-chart" style="height:120px;">
+          <div class="bar" data-h="30" style="background:linear-gradient(180deg,var(--accent),transparent)"><span>18-25</span></div>
+          <div class="bar" data-h="65" style="background:linear-gradient(180deg,var(--accent),transparent)"><span>26-35</span></div>
+          <div class="bar" data-h="80" style="background:linear-gradient(180deg,var(--accent),transparent)"><span>36-45</span></div>
+          <div class="bar" data-h="40" style="background:linear-gradient(180deg,var(--accent),transparent)"><span>46-55</span></div>
+          <div class="bar" data-h="20" style="background:linear-gradient(180deg,var(--accent),transparent)"><span>56+</span></div>
+        </div>
+      </div>
+
+      <div class="chart-card glass reveal">
+        <div class="chart-card-head"><h4>Monthly Income Analysis</h4></div>
+        <div class="bar-chart" style="height:120px;">
+          <div class="bar" data-h="35" style="background:linear-gradient(180deg,var(--success),transparent)"><span>Q1</span></div>
+          <div class="bar" data-h="55" style="background:linear-gradient(180deg,var(--success),transparent)"><span>Q2</span></div>
+          <div class="bar" data-h="70" style="background:linear-gradient(180deg,var(--success),transparent)"><span>Q3</span></div>
+          <div class="bar" data-h="90" style="background:linear-gradient(180deg,var(--success),transparent)"><span>Q4</span></div>
+        </div>
+      </div>
+
+      <div class="chart-card glass reveal">
+        <div class="chart-card-head"><h4>Job Satisfaction</h4></div>
+        <div class="donut" style="background:conic-gradient(var(--danger) 0% 20%, var(--warning) 20% 45%, var(--success) 45% 100%);"></div>
+        <div class="donut-legend">
+          <div class="leg"><span class="dot" style="background:var(--danger)"></span>Low — 20%</div>
+          <div class="leg"><span class="dot" style="background:var(--warning)"></span>Medium — 25%</div>
+          <div class="leg"><span class="dot" style="background:var(--success)"></span>High — 55%</div>
+        </div>
+      </div>
+
+      <div class="chart-card glass wide reveal">
+        <div class="chart-card-head"><h4>Attrition Trend (12 Months)</h4><span class="tag">Model-forecasted</span></div>
+        <div class="line-chart-wrap">
+          <svg viewBox="0 0 600 180" width="100%" height="180" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2563EB" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#2563EB" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <polyline points="0,120 60,110 120,130 180,90 240,100 300,70 360,85 420,55 480,65 540,40 600,50" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" id="trendLine" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+            <polygon points="0,120 60,110 120,130 180,90 240,100 300,70 360,85 420,55 480,65 540,40 600,50 600,180 0,180" fill="url(#lineFill)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chart-card glass reveal">
+        <div class="chart-card-head"><h4>Prediction Accuracy</h4></div>
+        <div class="risk-ring-wrap" style="width:140px;height:140px;margin:10px auto;">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10"></circle>
+            <circle cx="70" cy="70" r="60" fill="none" stroke="#22C55E" stroke-width="10" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="26" transform="rotate(-90 70 70)"></circle>
+          </svg>
+          <div class="risk-ring-center"><div class="pct" style="font-size:24px;">94%</div><div class="lbl">Accuracy</div></div>
+        </div>
+      </div>
+
+      <div class="chart-card glass wide reveal">
+
+    <div class="chart-card-head">
+        <div>
+            <h4>Attrition Heat Map</h4>
+            <span class="tag">Department × Job Satisfaction</span>
+        </div>
+    </div>
+
+    <div class="heatmap-wrapper">
+
+        <div class="heatmap-y-label">
+            Department
+        </div>
+
+        <div class="heatmap-content">
+
+            <div class="heatmap-x-labels">
+                <span>Low</span>
+                <span>Medium</span>
+                <span>High</span>
+                <span>Very High</span>
+            </div>
+
+            <div class="heatmap" id="heatmap"></div>
+
+        </div>
+
+    </div>
+
+    <div class="heatmap-legend">
+        <span>Low Attrition</span>
+
+        <div class="legend-gradient"></div>
+
+        <span>High Attrition</span>
+    </div>
+
+</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURE IMPORTANCE
+============================================================ -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> MODEL EXPLAINABILITY</div>
+      <h2>Feature importance</h2>
+      <p>Relative influence of each input on the Random Forest classifier's predictions.</p>
+    </div>
+    <div class="glass reveal" style="padding:36px;">
+      <div class="feature-list">
+        <div class="feature-row"><span class="fname">OverTime</span><div class="feature-track"><div class="feature-fill" data-width="100"></div></div><span class="fval">0.187</span></div>
+        <div class="feature-row"><span class="fname">Monthly Income</span><div class="feature-track"><div class="feature-fill" data-width="88"></div></div><span class="fval">0.164</span></div>
+        <div class="feature-row"><span class="fname">Job Satisfaction</span><div class="feature-track"><div class="feature-fill" data-width="79"></div></div><span class="fval">0.148</span></div>
+        <div class="feature-row"><span class="fname">Years At Company</span><div class="feature-track"><div class="feature-fill" data-width="70"></div></div><span class="fval">0.131</span></div>
+        <div class="feature-row"><span class="fname">Age</span><div class="feature-track"><div class="feature-fill" data-width="61"></div></div><span class="fval">0.114</span></div>
+        <div class="feature-row"><span class="fname">Distance From Home</span><div class="feature-track"><div class="feature-fill" data-width="52"></div></div><span class="fval">0.097</span></div>
+        <div class="feature-row"><span class="fname">Work Life Balance</span><div class="feature-track"><div class="feature-fill" data-width="45"></div></div><span class="fval">0.084</span></div>
+        <div class="feature-row"><span class="fname">Environment Satisfaction</span><div class="feature-track"><div class="feature-fill" data-width="38"></div></div><span class="fval">0.071</span></div>
+        <div class="feature-row"><span class="fname">Performance Rating</span><div class="feature-track"><div class="feature-fill" data-width="29"></div></div><span class="fval">0.054</span></div>
+        <div class="feature-row"><span class="fname">Promotion History</span><div class="feature-track"><div class="feature-fill" data-width="21"></div></div><span class="fval">0.039</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     AI WORKFLOW TIMELINE
+============================================================ -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> UNDER THE HOOD</div>
+      <h2>How TalentPulse thinks</h2>
+      <p>From raw HR records to an actionable retention recommendation.</p>
+    </div>
+    <div class="glass reveal" style="padding:48px 36px;">
+      <div class="workflow-track">
+        <div class="wf-step"><div class="wf-icon" style="border-color:var(--primary)"><i class="fa-solid fa-database"></i></div><span>Dataset</span></div>
+        <div class="wf-step"><div class="wf-icon" style="border-color:var(--primary)"><i class="fa-solid fa-broom"></i></div><span>Preprocessing</span></div>
+        <div class="wf-step"><div class="wf-icon" style="border-color:var(--secondary)"><i class="fa-solid fa-diagram-project"></i></div><span>Machine Learning</span></div>
+        <div class="wf-step"><div class="wf-icon" style="border-color:var(--secondary)"><i class="fa-solid fa-tree"></i></div><span>Random Forest</span></div>
+        <div class="wf-step"><div class="wf-icon" style="border-color:var(--accent)"><i class="fa-solid fa-crystal-ball"></i></div><span>Prediction</span></div>
+        <div class="wf-step"><div class="wf-icon" style="border-color:var(--accent)"><i class="fa-solid fa-lightbulb"></i></div><span>AI Recommendation</span></div>
+        <div class="wf-step"><div class="wf-icon" style="border-color:var(--success)"><i class="fa-solid fa-hand-holding-heart"></i></div><span>HR Decision Support</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT SECTION
+============================================================ -->
+<section class="section-pad" id="about">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> ABOUT THE PROJECT</div>
+      <h2>Why TalentPulse exists</h2>
+      <p>Turnover is expensive and mostly predictable. TalentPulse closes the gap between data and decisions.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card glass reveal"><i class="fa-solid fa-brain"></i><h4>AI-Driven Prediction</h4><p>A tuned Random Forest model trained on historical HR records forecasts attrition risk per employee with 94% accuracy.</p></div>
+      <div class="about-card glass reveal"><i class="fa-solid fa-magnifying-glass-chart"></i><h4>Root Cause Analysis</h4><p>Every prediction is decomposed into the specific factors driving it, so HR knows exactly what to fix.</p></div>
+      <div class="about-card glass reveal"><i class="fa-solid fa-hand-holding-heart"></i><h4>Proactive Retention</h4><p>Actionable, prioritized recommendations turn risk scores into real interventions before resignation letters arrive.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TEAM SECTION
+============================================================ -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> THE TEAM</div>
+      <h2>Built by</h2>
+      <p>The people behind the model, the data pipeline, and the platform.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card glass reveal"><div class="avatar">A</div><h4>Data Science Lead</h4><div class="role">Model Architecture</div><div class="team-social"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-github"></i></a></div></div>
+      <div class="team-card glass reveal"><div class="avatar">B</div><h4>ML Engineer</h4><div class="role">Feature Engineering</div><div class="team-social"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-github"></i></a></div></div>
+      <div class="team-card glass reveal"><div class="avatar">C</div><h4>Frontend Engineer</h4><div class="role">Dashboard & UX</div><div class="team-social"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-github"></i></a></div></div>
+      <div class="team-card glass reveal"><div class="avatar">D</div><h4>HR Domain Advisor</h4><div class="role">Business Strategy</div><div class="team-social"><a href="#"><i class="fa-brands fa-linkedin-in"></i></a><a href="#"><i class="fa-brands fa-github"></i></a></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT SECTION
+============================================================ -->
+<section class="section-pad" id="contact">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow"><i class="fa-solid fa-circle"></i> GET IN TOUCH</div>
+      <h2>Let's talk retention</h2>
+      <p>Questions about the model, the data, or a pilot rollout? Reach out.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info-card glass reveal-left">
+        <div class="contact-row"><div class="icon-box"><i class="fa-solid fa-envelope"></i></div><div><h5>Email</h5><p>hello@talentpulse.ai</p></div></div>
+        <div class="contact-row"><div class="icon-box"><i class="fa-solid fa-phone"></i></div><div><h5>Phone</h5><p>+1 (555) 019-2044</p></div></div>
+        <div class="contact-row"><div class="icon-box"><i class="fa-solid fa-location-dot"></i></div><div><h5>Office</h5><p>Innovation Park, Building 4</p></div></div>
+        <div class="contact-row"><div class="icon-box"><i class="fa-solid fa-clock"></i></div><div><h5>Hours</h5><p>Mon–Fri, 9:00 – 18:00</p></div></div>
+      </div>
+      <form class="form-card glass reveal-right" id="contactForm" action="/contact" method="POST">
+
+  <div class="field" style="margin-bottom:16px;">
+    <label>
+      <i class="fa-solid fa-user"></i> Full Name
+    </label>
+    <input
+      type="text"
+      name="name"
+      placeholder="Your name"
+      required>
+  </div>
+
+  <div class="field" style="margin-bottom:16px;">
+    <label>
+      <i class="fa-solid fa-at"></i> Employee / Manager Email
+    </label>
+    <input
+      type="email"
+      name="email"
+      placeholder="employee@company.com"
+      required>
+  </div>
+
+  <div class="field" style="margin-bottom:20px;">
+    <label>
+      <i class="fa-solid fa-message"></i> Message
+    </label>
+    <textarea
+      name="message"
+      placeholder="How can we help?"
+      rows="5"
+      required></textarea>
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-predict"
+    style="width:100%;justify-content:center;">
+    <i class="fa-solid fa-paper-plane"></i>
+    Send Message
+  </button>
+
+</form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><div class="logo-mark"><i class="fa-solid fa-wave-square"></i></div>TalentPulse</div>
+        <p>AI-powered workforce intelligence for proactive employee retention.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-github"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col"><h5>Product</h5><a href="#dashboard">Dashboard</a><a href="#prediction">Prediction</a><a href="#analytics">Analytics</a></div>
+      <div class="footer-col"><h5>Company</h5><a href="#about">About</a><a href="#contact">Contact</a><a href="#">Careers</a></div>
+      <div class="footer-col"><h5>Legal</h5><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Data Security</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 TalentPulse. All rights reserved.</span>
+      <span>Powered by AI &middot; Random Forest Engine v2.4</span>
+    </div>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop"><i class="fa-solid fa-arrow-up"></i></button>
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastMsg">Prediction generated successfully</span></div>
+
+<script>
+/* ============================================================
+   NAVBAR: scroll state + mobile toggle
+============================================================ */
+const navbar = document.getElementById('navbar');
+const navLinks = document.getElementById('navLinks');
+const navToggle = document.getElementById('navToggle');
+
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+  document.getElementById('backTop').classList.toggle('show', window.scrollY > 700);
+});
+
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+document.getElementById('backTop').addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+/* ============================================================
+   RIPPLE EFFECT ON BUTTONS
+============================================================ */
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.style.position = 'relative';
+  btn.style.overflow = 'hidden';
+  btn.addEventListener('click', function(e){
+    const rect = this.getBoundingClientRect();
+    const circle = document.createElement('span');
+    const size = Math.max(rect.width, rect.height);
+    circle.className = 'ripple';
+    circle.style.width = circle.style.height = size + 'px';
+    circle.style.left = (e.clientX - rect.left - size/2) + 'px';
+    circle.style.top = (e.clientY - rect.top - size/2) + 'px';
+    this.appendChild(circle);
+    setTimeout(() => circle.remove(), 600);
+  });
+});
+
+/* ============================================================
+   SCROLL REVEAL (IntersectionObserver)
+============================================================ */
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* ============================================================
+   ANIMATED COUNTERS
+============================================================ */
+function animateCounter(el){
+  const target = parseFloat(el.getAttribute('data-count'));
+  const suffix = el.getAttribute('data-suffix') || '';
+  const duration = 1800;
+  const start = performance.now();
+  function tick(now){
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = Math.floor(eased * target);
+    el.textContent = value.toLocaleString() + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = target.toLocaleString() + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !entry.target.dataset.done) {
+      entry.target.dataset.done = 'true';
+      animateCounter(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+/* ============================================================
+   BAR CHARTS / CAUSE BARS / FEATURE BARS: animate width/height on view
+============================================================ */
+function animateBars(container){
+  container.querySelectorAll('.bar').forEach(bar => {
+    bar.style.height = bar.getAttribute('data-h') + '%';
+  });
+}
+document.querySelectorAll('.bar-chart').forEach(chart => {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting){ animateBars(entry.target); obs.disconnect(); } });
+  }, { threshold: 0.4 });
+  obs.observe(chart);
+});
+
+function animateFillBars(selector){
+  document.querySelectorAll(selector).forEach(fill => {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          entry.target.style.width = entry.target.getAttribute('data-width') + '%';
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    obs.observe(fill);
+  });
+}
+animateFillBars('.cause-bar-fill');
+animateFillBars('.feature-fill');
+
+/* Trend line draw-in */
+const trendLine = document.getElementById('trendLine');
+if (trendLine){
+  const lineObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){ trendLine.style.transition = 'stroke-dashoffset 1.8s ease'; trendLine.style.strokeDashoffset = '0'; lineObs.disconnect(); }
+    });
+  }, { threshold: 0.4 });
+  lineObs.observe(trendLine);
+}
+
+/* ============================================================
+   HEATMAP GENERATION
+============================================================*/
+const heatmap = document.getElementById('heatmap');
+
+if (heatmap) {
+
+    const heatmapData = [
+        {
+            department: 'HR',
+            values: [45.45, 10.00, 20.00, 11.76]
+        },
+        {
+            department: 'R&D',
+            values: [19.79, 13.79, 14.33, 9.49]
+        },
+        {
+            department: 'Sales',
+            values: [26.74, 23.26, 21.26, 14.97]
+        }
+    ];
+
+    const maxValue = 45.45;
+
+    heatmapData.forEach(row => {
+
+        const rowElement = document.createElement('div');
+        rowElement.className = 'heatmap-row';
+
+        const label = document.createElement('span');
+        label.className = 'heatmap-row-label';
+        label.textContent = row.department;
+
+        rowElement.appendChild(label);
+
+        row.values.forEach(value => {
+
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+
+            const intensity = value / maxValue;
+
+            cell.style.background =
+                `rgba(212, 90, 122, ${0.15 + intensity * 0.75})`;
+
+            cell.textContent = value.toFixed(1) + '%';
+
+            cell.title =
+                row.department +
+                ' • Attrition: ' +
+                value.toFixed(2) +
+                '%';
+
+            rowElement.appendChild(cell);
+        });
+
+        heatmap.appendChild(rowElement);
+    });
+}
+
+/* ============================================================
+   TYPED EFFECT FOR HERO HEADLINE (subtle re-trigger not needed; CSS blink cursor only)
+============================================================ */
+
+/* ============================================================
+   PREDICTION FORM SUBMIT -> SHOW RESULT
+============================================================ */
+const predictForm = document.getElementById('predictForm');
+const resultPlaceholder = document.getElementById('resultPlaceholder');
+const resultContent = document.getElementById('resultContent');
+const riskRing = document.getElementById('riskRing');
+const riskPct = document.getElementById('riskPct');
+const riskBadge = document.getElementById('riskBadge');
+const riskLabel = document.getElementById('riskLabel');
+const empStatus = document.getElementById('empStatus');
+const confScore = document.getElementById('confScore');
+const predSpeed = document.getElementById('predSpeed');
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+
+const CIRCUMFERENCE = 2 * Math.PI * 78;
+riskRing.setAttribute('stroke-dasharray', CIRCUMFERENCE.toFixed(1));
+
+function showToast(msg){
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+predictForm.addEventListener('submit', function(e){
+  e.preventDefault();
+
+  // Simulate a model score derived pseudo-randomly for demo purposes
+  const score = Math.floor(Math.random() * 61) + 30; // 30 - 90
+  const confidence = Math.floor(Math.random() * 12) + 86; // 86 - 98
+  const speed = Math.floor(Math.random() * 90) + 110; // 110 - 200ms
+
+  let level, color;
+  if (score >= 65){ level = 'High Risk'; color = '#EF4444'; riskBadge.className = 'risk-badge risk-high'; empStatus.textContent = 'Active — Flight Risk Detected'; }
+  else if (score >= 40){ level = 'Medium Risk'; color = '#F59E0B'; riskBadge.className = 'risk-badge risk-medium'; empStatus.textContent = 'Active — Monitor Closely'; }
+  else { level = 'Low Risk'; color = '#22C55E'; riskBadge.className = 'risk-badge risk-low'; empStatus.textContent = 'Active — Stable'; }
+
+  riskLabel.textContent = level;
+  riskRing.setAttribute('stroke', color);
+  const offset = CIRCUMFERENCE - (score / 100) * CIRCUMFERENCE;
+
+  resultPlaceholder.style.display = 'none';
+  resultContent.classList.add('active');
+
+  // animate ring + percentage count
+  requestAnimationFrame(() => { riskRing.style.strokeDashoffset = offset; });
+  let cur = 0;
+  const dur = 1200, start = performance.now();
+  function tickPct(now){
+    const p = Math.min((now-start)/dur,1);
+    const eased = 1 - Math.pow(1-p,3);
+    riskPct.textContent = Math.floor(eased*score) + '%';
+    if(p<1) requestAnimationFrame(tickPct); else riskPct.textContent = score + '%';
+  }
+  requestAnimationFrame(tickPct);
+
+  confScore.textContent = confidence + '%';
+  predSpeed.textContent = speed + 'ms';
+
+  showToast('Prediction generated — ' + level + ' (' + score + '%)');
+
+  document.getElementById('resultCard').scrollIntoView({ behavior:'smooth', block:'nearest' });
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  resultContent.classList.remove('active');
+  resultPlaceholder.style.display = 'block';
+  riskRing.style.strokeDashoffset = CIRCUMFERENCE;
+});
+
+/* Contact form (demo submission) */
+const contactForm = document.getElementById('contactForm');
+if (contactForm){
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    showToast('Message sent — we will be in touch shortly');
+    contactForm.reset();
+  });
+}
+
+/* ============================================================
+   AMBIENT PARTICLE CANVAS
+============================================================ */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function initParticles(){
+  particles = [];
+  const count = Math.min(60, Math.floor(window.innerWidth / 25));
+  for (let i=0;i<count;i++){
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      r: Math.random()*1.6+0.4,
+      vx: (Math.random()-0.5)*0.25,
+      vy: (Math.random()-0.5)*0.25,
+      o: Math.random()*0.5+0.15
+    });
+  }
+}
+initParticles();
+
+function animateParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(148,163,184,'+p.o+')';
+    ctx.fill();
+  });
+  requestAnimationFrame(animateParticles);
+}
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  animateParticles();
+}
+
+/* ============================================================
+   SMOOTH ANCHOR SCROLL OFFSET FOR STICKY NAV
+============================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e){
+    const id = this.getAttribute('href');
+    if (id.length > 1){
+      const target = document.querySelector(id);
+      if (target){
+        e.preventDefault();
+        const y = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
